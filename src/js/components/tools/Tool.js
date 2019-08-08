@@ -1,9 +1,12 @@
 import React from 'react';
 import {inject, observer} from "mobx-react";
+import {action, observable} from "mobx";
 
 @inject("toolsUiStore", "toolsStore")
 @observer
 class Tool extends React.Component {
+
+  @observable isEdited = false;
 
   render() {
     console.log("tool render");
@@ -11,15 +14,25 @@ class Tool extends React.Component {
       {this.renderName()}
       {this.renderDescription()}
       {this.renderRights()}
-      {this.renderEditCheckbox()}
+      {this.renderEditButton()}
+      {this.renderSaveButton()}
     </div>
   }
 
   renderName() {
     const {name} = this.props.tool;
 
-    if (this.isEditMode()) {
-      return <input className="Tool__name" onChange={this.handleNameChange} value={name}/>
+    if (this.isEdited) {
+      return <span className="Tool__name">
+        <input onChange={this.handleNameChange} value={name}/>
+        {(() => {
+          let violations = this.props.toolsUiStore.getViolations(this.props.tool, "name");
+          return violations.map(violation => {
+            return <div key={violation}>{violation}</div>;
+          });
+        })()}
+      </span>
+
     }
 
     return <span className="Tool__name">{name}</span>;
@@ -28,7 +41,7 @@ class Tool extends React.Component {
   renderDescription() {
     const {description} = this.props.tool;
 
-    if (this.isEditMode()) {
+    if (this.isEdited) {
       return <input className="Tool__description" onChange={this.handleDescriptionChange} value={description}/>
     }
 
@@ -38,36 +51,49 @@ class Tool extends React.Component {
   renderRights() {
     const {rights} = this.props.tool;
 
-    if (this.isEditMode()) {
+    if (this.isEdited) {
       return <input className="Tool__rights" onChange={this.handleRightsChange} value={rights}/>
     }
 
     return <span className="Tool__rights">{rights}</span>;
   }
 
-  renderEditCheckbox() {
-    return <input type="checkbox" onChange={this.handleEditToggle} checked={this.isEditMode()}/>;
+  renderEditButton() {
+    let text = this.isEdited ? "Cancel" : "Edit";
+    return <button onClick={this.handleEditToggle}>{text}</button>;
+  }
+
+  renderSaveButton() {
+    if (this.isEdited && this.isValidTool()) {
+      return <button onClick={this.handleSave}>Save</button>
+    }
+
+    return null;
   }
 
   handleNameChange = (event) => {
-    this.props.tool.name = event.target.value;
+    this.props.tool.setName(event.target.value);
   };
 
   handleDescriptionChange = (event) => {
-    this.props.tool.description = event.target.value
+    this.props.tool.setDescription(event.target.value);
   };
 
   handleRightsChange = (event) => {
-    this.props.tool.rights = event.target.value
+    this.props.tool.setRights(event.target.value);
   };
 
+  @action
   handleEditToggle = () => {
-    this.props.toolsUiStore.toggleEditMode(this.props.tool);
+    this.isEdited = !this.isEdited;
   };
 
-  isEditMode = () => {
-    //return true;
-    return this.props.toolsUiStore.isEdited(this.props.tool);
+  handleSave = () => {
+    this.props.onSave(this.props.tool).then(this.handleEditToggle);
+  };
+
+  isValidTool = () => {
+    return this.props.toolsUiStore.isValidTool(this.props.tool);
   }
 
 }

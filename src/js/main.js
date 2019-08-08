@@ -4,6 +4,10 @@ import {Provider} from "mobx-react";
 import rootStore from "./store/RootStore"
 import MainView from "./components/MainView";
 import toolsApi from "./api/ToolsApi";
+import toolValidator from "./service/ToolValidator";
+import { configure } from "mobx";
+
+configure({ enforceActions: "always" });
 
 ReactDOM.render(
   <Provider {...rootStore}>

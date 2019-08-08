@@ -1,13 +1,10 @@
-import {observable, computed, action, autorun} from "mobx";
+import {action, observable} from "mobx";
 import Tool from "../model/Tool";
 
 class ToolsStore {
 
   constructor(rootStore) {
     this.rootStore = rootStore;
-    autorun(() => {
-      console.log(this.tools);
-    })
   }
 
   @observable tools = [];
@@ -23,8 +20,8 @@ class ToolsStore {
     this.tools.replace(tools);
   };
 
-  @action changeToolName = (name) => {
-    this.tools[0].name = name
+  @action replaceTool(replaced, replacer) {
+    this.tools = this.tools.map(tool => tool === replaced ? replacer : tool)
   }
 
 

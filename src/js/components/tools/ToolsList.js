@@ -2,8 +2,9 @@ import React from "react";
 import {inject, observer} from "mobx-react";
 import Tool from "./Tool"
 import {LoadingStatus} from "../../store/ToolsUiStore";
+import toolsService from "../../service/ToolsService";
 
-@inject("toolsStore", "toolsUiStore")
+@inject("toolsStore", "toolsUiStore", "notificationsStore")
 @observer
 class ToolsList extends React.Component {
 
@@ -12,7 +13,7 @@ class ToolsList extends React.Component {
   }
 
   render() {
-    console.log("list render", this.props);
+    console.log("list render");
     return <div className="ToolsList">
       {this.renderLoader()}
       {this.renderList()}
@@ -32,7 +33,7 @@ class ToolsList extends React.Component {
 
   renderList() {
     return this.props.toolsStore.tools.map(tool => {
-      return <Tool key={tool.id} tool={tool}/>
+      return <Tool key={tool.id} tool={tool} onSave={toolsService.saveTool}/>
     });
   }
 
