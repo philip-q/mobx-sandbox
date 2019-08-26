@@ -17,8 +17,10 @@ class ToolsService {
         notificationsStore.show("error", "failed to load tools");
       })
       .finally(() => {
+        // todo from performance point of view this is bad: non transactional
         toolsUiStore.setLoadingStatus(false);
       });
+
   }
 
   saveTool(tool) {
@@ -30,10 +32,8 @@ class ToolsService {
           toolsStore.replaceTool(tool, saved);
           resolve();
         })
-        .catch(err => {
-          if (err === "422") {
-            rootStore.toolsUiStore.addInvalidTool(tool, new Map().set("name", error));
-          }
+        .catch(() => {
+          tool.setServerValidationResult(new Map().set("name", ["Server: Contains 422"]));
         })
         .finally(() => {
           toolsUiStore.setLoadingStatus(false);
@@ -42,6 +42,10 @@ class ToolsService {
     });
 
 
+  }
+
+  removeTool(tool) {
+    toolsStore.removeTool(tool);
   }
 
 }

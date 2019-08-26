@@ -4,11 +4,13 @@ import {autorun} from "mobx";
 class ToolValidator {
 
   constructor() {
-    autorun(this.validate)
+    // autorun(this.validateV1)
   }
 
-
-  validate() {
+  /*
+  * Doesn't work with current version (computed) due to a cyclomatic dependency: validator - store - tool - validator
+  * */
+  validateV1() {
     rootStore.toolsStore.tools.forEach(tool => {
 
       console.log("Validating ", tool.name);
@@ -30,6 +32,22 @@ class ToolValidator {
       }
 
     });
+  }
+
+  validateName = (name) => {
+    console.log("Validating ", name);
+
+    let nameViolations = [];
+
+    if (name.indexOf("bad") > -1) {
+      nameViolations.push("Contains bad word");
+    }
+
+    if (name.length > 10) {
+      nameViolations.push("Too long");
+    }
+
+    return nameViolations;
   }
 
 }

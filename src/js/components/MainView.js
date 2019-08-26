@@ -4,13 +4,15 @@ import {inject, observer} from "mobx-react";
 import {LoadingStatus} from "../store/ToolsUiStore";
 import Notifications from "./Notifications";
 import toolsService from "../service/ToolsService";
+import Devtools from "mobx-react-devtools";
 
 @inject("toolsUiStore")
 @observer
 class MainView extends React.Component {
 
-  componentWillMount() {
+  componentDidMount() {
     // router or in my case MainComponent can handle it
+    console.log("MainView:componentDidMount: toolsService.loadTools()");
     toolsService.loadTools();
   }
 
@@ -23,6 +25,7 @@ class MainView extends React.Component {
   }
 
   handleClick = () => {
+    toolsService.loadTools();
   }
 
 }

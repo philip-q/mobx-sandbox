@@ -1,5 +1,5 @@
 import {action, observable} from "mobx";
-import Tool from "../model/Tool";
+import Tool from "../model/tool/Tool";
 
 class ToolsStore {
 
@@ -10,18 +10,22 @@ class ToolsStore {
   @observable tools = [];
 
   @action addTool = () => {
-    let tool = new Tool("enter tool name", "enter tool description", "enter tool rights");
-
+    let tempId = - new Date().getTime();
+    let tool = new Tool(tempId, "name", "description", "rights");
     this.tools.push(tool);
-    this.rootStore.toolsUiStore.toggleEditMode(tool);
   };
 
   @action receiveTools = (tools) => {
+    console.log("Store: receiving tools");
     this.tools.replace(tools);
   };
 
   @action replaceTool(replaced, replacer) {
     this.tools = this.tools.map(tool => tool === replaced ? replacer : tool)
+  }
+
+  @action removeTool(tool) {
+    this.tools.splice(this.tools.indexOf(tool), 1);
   }
 
 

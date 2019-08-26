@@ -24,7 +24,7 @@ class ToolsList extends React.Component {
   renderLoader() {
     const {loadingStatus} = this.props.toolsUiStore;
 
-    if (loadingStatus === LoadingStatus.REQUIRED || loadingStatus === LoadingStatus.IN_PROGRESS) {
+    if (loadingStatus) {
       return "Loading"
     }
 
@@ -33,7 +33,12 @@ class ToolsList extends React.Component {
 
   renderList() {
     return this.props.toolsStore.tools.map(tool => {
-      return <Tool key={tool.id} tool={tool} onSave={toolsService.saveTool}/>
+      return <Tool
+        key={tool.id}
+        tool={tool}
+        onSave={toolsService.saveTool}
+        onDelete={toolsService.removeTool}
+      />
     });
   }
 

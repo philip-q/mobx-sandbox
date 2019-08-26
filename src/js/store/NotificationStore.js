@@ -1,4 +1,4 @@
-import {action, observable, runInAction} from "mobx";
+import {action, autorun, observable, runInAction} from "mobx";
 
 const NOTIFICATION_TTL = 3000;
 
@@ -12,10 +12,9 @@ export default class NotificationStore {
   @action
   show(level, message) {
     this.notifications.push({level, message});
-    setTimeout(
+    setTimeout(() =>
       runInAction(() => {
-        console.log("removing notification");
-        this.notifications.slice(1);
+        this.notifications.shift();
       }),
       NOTIFICATION_TTL
     );

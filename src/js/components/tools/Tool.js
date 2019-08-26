@@ -16,21 +16,17 @@ class Tool extends React.Component {
       {this.renderRights()}
       {this.renderEditButton()}
       {this.renderSaveButton()}
+      {this.renderDeleteButton()}
     </div>
   }
 
   renderName() {
-    const {name} = this.props.tool;
+    const {tool, tool: {name}} = this.props;
 
     if (this.isEdited) {
       return <span className="Tool__name">
         <input onChange={this.handleNameChange} value={name}/>
-        {(() => {
-          let violations = this.props.toolsUiStore.getViolations(this.props.tool, "name");
-          return violations.map(violation => {
-            return <div key={violation}>{violation}</div>;
-          });
-        })()}
+        {tool.nameViolationsFull.map(violation => <div key={violation}>{violation}</div>)}
       </span>
 
     }
@@ -67,8 +63,12 @@ class Tool extends React.Component {
     if (this.isEdited && this.isValidTool()) {
       return <button onClick={this.handleSave}>Save</button>
     }
+  }
 
-    return null;
+  renderDeleteButton() {
+    if (this.isEdited) {
+      return <button onClick={this.handleDelete}>Delete</button>
+    }
   }
 
   handleNameChange = (event) => {
@@ -90,6 +90,10 @@ class Tool extends React.Component {
 
   handleSave = () => {
     this.props.onSave(this.props.tool).then(this.handleEditToggle);
+  };
+
+  handleDelete = () => {
+    this.props.onDelete(this.props.tool);
   };
 
   isValidTool = () => {

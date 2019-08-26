@@ -11,4 +11,5 @@ class RootStore {
   }
 }
 
-export default new RootStore();
+const rootStore = new RootStore(); // !important, otherwise on each import you get a new store
+export default rootStore;

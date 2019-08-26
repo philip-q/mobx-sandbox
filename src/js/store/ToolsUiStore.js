@@ -25,16 +25,6 @@ class ToolsUiStore {
   }
 
   @action
-  toggleEditMode = (tool) => {
-    if (this.editedTools.indexOf(tool) > -1) {
-      this.editedTools = this.editedTools.filter(t => t !== tool);
-    } else {
-      this.editedTools.push(tool);
-    }
-
-  };
-
-  @action
   setLoadingStatus(status) {
     this.loadingStatus = status
   }
@@ -50,16 +40,6 @@ class ToolsUiStore {
   removeInvalidTool(tool) {
     this.invalidTools.delete(tool);
   }
-
-  // todo why so ?
-  //@computed
-  // isEdited = (tool) => {
-  //     return this.editedTools.indexOf(tool) > -1;
-  // };
-
-  // isEdited = (tool) => {
-  //   return computed(() => this.editedTools.indexOf(tool) > -1).get();
-  // };
 
   getViolations = (tool, field) => {
     return computed(() => {

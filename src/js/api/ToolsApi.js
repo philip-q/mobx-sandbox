@@ -1,5 +1,5 @@
 import rootStore from "../store/RootStore";
-import Tool from "../model/Tool";
+import Tool from "../model/tool/Tool";
 import {autorun, toJS} from "mobx";
 import {LoadingStatus} from "../store/ToolsUiStore";
 
@@ -12,20 +12,20 @@ class ToolsApi {
   getAllTools() {
 
     return new Promise((resolve) => {
-      console.log("Loading tools");
+      console.log("Api: Loading tools");
       setTimeout(() => {
         resolve(DB.loadTools());
       }, 1000)
     });
   }
-
+422
   saveTool(tool) {
     return new Promise((resolve, reject) => {
-      console.log("Saving tool");
+      console.log("Api: Saving tool");
 
       setTimeout(() => {
-        if (tool.name.indexOf("422") > -1) {
-          reject("Name is already taken");
+        if (tool.name.indexOf("") > -1) {
+          reject();
         } else {
           resolve(DB.saveTool(tool));
         }
@@ -59,7 +59,6 @@ class Db {
     }, 0);
 
     this.seq_tool_id = maxId + 1;
-    console.log("loadTools", storageTools);
     return storageTools;
   }
 
